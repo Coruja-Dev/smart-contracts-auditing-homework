@@ -1,0 +1,25 @@
+{
+  "name": "smart-contracts-auditing-homework",
+  "version": "1.0.0",
+  "description": "Homework for the smart contract audit course.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coruja-Dev/smart-contracts-auditing-homework.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Coruja-Dev/smart-contracts-auditing-homework/issues"
+  },
+  "homepage": "https://github.com/Coruja-Dev/smart-contracts-auditing-homework#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^17.2.3",
+    "hardhat": "^2.27.0"
+  }
+}
