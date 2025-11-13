@@ -1,6 +1,23 @@
+require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
 
 module.exports = {
-  solidity: "0.8.19",
+  solidity: {
+    compilers: [
+      {
+        version: "0.4.21",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200
+          }
+        }
+      },
+      {
+        version: "0.8.19"
+      }
+    ]
+  },
   paths: {
     sources: "./challenges",
     tests: "./test",
