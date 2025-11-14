@@ -15,7 +15,16 @@ The contract is a simple game where the participants can get 0.00002 ETH by gues
    - **Location**: Line 4
    - **Impact**: Monetary lost
    - **Explanation**: An attacker may check the correct answer by simply reading the contract, since the number is defined statically on the code without any security measures, such as criptography.
-   - **Recommended approach**: 
+   - **Recommended approach**: Depending on some requirements, there could be more than one aproach:
+     - **if the number needs to be static**: 
+       - **use off-chain salt**: 
+         - ```solidity
+bytes32 public answerCommitment; // keccak256(42, secret_salt)
+
+function guess(uint8 n, bytes32 salt) public {
+    require(keccak256(abi.encodePacked(n, salt)) == answerCommitment);
+}
+```
 
 ## 2. Slither Analysis
 
