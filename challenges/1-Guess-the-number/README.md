@@ -180,20 +180,6 @@ While Mythril correctly identifies the withdrawal vulnerability, the fundamental
 3. Anyone can read `answer = 42` from storage slot 0
 4. Therefore, anyone can call `guess(42)` and drain the contract
 
-## Lessons Learned
-
-### Security Issues
-- What went wrong in this contract?
-- What security principles were violated?
-
-### Best Practices
-- How should this have been implemented?
-- What protections should have been in place?
-
-### Real-World Implications
-- Could this happen in production?
-- What are the consequences?
-
 ## References
 - Capture the Ether original: https://capturetheether.com/challenges/lotteries/guess-the-number/
 - Solidity docs: https://docs.soliditylang.org/en/latest/bugs.html
