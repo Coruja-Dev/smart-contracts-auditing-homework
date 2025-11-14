@@ -180,32 +180,6 @@ While Mythril correctly identifies the withdrawal vulnerability, the fundamental
 3. Anyone can read `answer = 42` from storage slot 0
 4. Therefore, anyone can call `guess(42)` and drain the contract
 
-## 4. Foundry Analysis (Optional)
-
-### Test Setup
-[If you write Foundry tests]
-
-### Test Results
-[Results from fuzzing or property tests]
-
-## Exploitation
-
-### Attack Vector
-Detailed explanation of how to exploit the vulnerability.
-
-### Exploit Code
-[Reference to your test.js file or paste relevant code]
-
-### Execution Steps
-1. Deploy contract
-2. Call function X with parameter Y
-3. Verify success
-
-### Results
-- Transaction hash: [Link]
-- Was the challenge completed? Yes/No
-- Funds recovered: X ETH
-
 ## Lessons Learned
 
 ### Security Issues
@@ -221,6 +195,6 @@ Detailed explanation of how to exploit the vulnerability.
 - What are the consequences?
 
 ## References
-- Capture the Ether original: [link]
-- Solidity docs: [relevant sections]
-- Security resources: [any references you used]
+- Capture the Ether original: https://capturetheether.com/challenges/lotteries/guess-the-number/
+- Solidity docs: https://docs.soliditylang.org/en/latest/bugs.html
+- Block on Etherscan: https://sepolia.etherscan.io/tx/0x9b40f130c81a8b68f70e2a771fca9dfb9c718e834323190a74a5873a2131fdc8
