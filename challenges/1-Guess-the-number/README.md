@@ -13,9 +13,9 @@ The contract is a simple game where the participants can get 0.00002 ETH by gues
 ### Identified Vulnerabilities
 1. **Vulnerability Description**: Visible answer
    - **Location**: Line 4
-   - **Impact**: Monetary lost
-   - **Explanation**: An attacker may check the correct answer by simply reading the contract, since the number is defined statically on the code without any security measures, such as criptography.
-   - **Recommended approach**: Depending on some requirements, there could be more than one aproach:
+   - **Impact**: Monetary loss
+   - **Explanation**: An attacker may check the correct answer by simply reading the contract, since the number is defined statically on the code without any security measures, such as cryptography.
+   - **Recommended approach**: Depending on some requirements, there could be more than one approach:
      - **if the number needs to be static**: 
        - **use off-chain salt**: 
          - ```solidity
@@ -35,8 +35,8 @@ The contract is a simple game where the participants can get 0.00002 ETH by gues
             function confirm(address guesser) public onlyOracle {
                 // Oracle confirms if guess was 42
             }``` 
-         - this approach is also not ideal, since is centralized and deppends on thrust on the oracle(s).
-     - **if the number can the random (recommended)**:
+         - this approach is also not ideal, since is centralized and depends  on trust on the oracle(s).
+     - **if the number can be random (recommended)**:
        - **use Chainlink VRF**
          - ```solidity
             import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
@@ -53,20 +53,13 @@ The contract is a simple game where the participants can get 0.00002 ETH by gues
                     answer = uint8(randomness % 256);
                 }
             }``` 
-         - This is the best approach, the number is random, decentralized and unpredictable. There are some disavantages, however, such as the higher gas cost, dependecy on an oracle and need for LINK tokens. 
+         - This is the best approach, the number is random, decentralized and unpredictable. There are some disadvantages, however, such as the higher gas cost, dependency on an oracle and need for LINK tokens. 
 
 2. **Vulnerability Description**: Old Solidity version
    - **Location**: Line 1
    - **Impact**: All the code
    - **Explanation**: There are known bugs for this old version of the language that can be exploited.
    - **Recommended approach**: update to the latest version
-
-## 2. Slither Analysis
-
-### Running Slither
-```bash
-slither challenges/1-Guess-the-number/
-```
 
 ## 2. Slither Analysis
 
