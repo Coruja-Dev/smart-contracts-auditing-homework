@@ -19,11 +19,53 @@ The contract is a simple game where the participants can get 0.00002 ETH by gues
      - **if the number needs to be static**: 
        - **use off-chain salt**: 
          - ```solidity
-bytes32 public answerCommitment; // keccak256(42, secret_salt)
+            bytes32 public answerCommitment; // keccak256(42, secret_salt)
 
-function guess(uint8 n, bytes32 salt) public {
-    require(keccak256(abi.encodePacked(n, salt)) == answerCommitment);
-}
+            function guess(uint8 n, bytes32 salt) public {
+                require(keccak256(abi.encodePacked(n, salt)) == answerCommitment);
+            }
+            ```
+         - this approach, howerver, is not recommended because it relies on a thrusted party to keep the salt.
+       - **use Off-Chain Oracle Verification**:
+         - ```solidity
+            function submitGuess(uint8 n) public {
+                // Emit event, oracle verifies off-chain
+            }
+
+            function confirm(address guesser) public onlyOracle {
+                // Oracle confirms if guess was 42
+            }``` 
+         - this approach is also not ideal, since is centralized and deppends on thrust on the oracle(s).
+     - **if the number can the random (recommended)**:
+       - **use Chainlink VRF**
+         - ```solidity
+            import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+
+            contract RandomChallenge is VRFConsumerBase {
+                uint8 public answer;
+                
+                function requestRandomAnswer() public {
+                    // Request random number from Chainlink VRF
+                    requestRandomness(keyHash, fee);
+                }
+                
+                function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+                    answer = uint8(randomness % 256);
+                }
+            }``` 
+         - This is the best approach, the number is random, decentralized and unpredictable. There are some disavantages, however, such as the higher gas cost, dependecy on an oracle and need for LINK tokens. 
+
+2. **Vulnerability Description**: Old Solidity version
+   - **Location**: Line 1
+   - **Impact**: All the code
+   - **Explanation**: There are known bugs for this old version of the language that can be exploited.
+   - **Recommended approach**: update to the latest version
+
+## 2. Slither Analysis
+
+### Running Slither
+```bash
+slither challenges/1-Guess-the-number/
 ```
 
 ## 2. Slither Analysis
@@ -34,15 +76,45 @@ slither challenges/1-Guess-the-number/
 ```
 
 ### Slither Output
-[Paste relevant Slither findings]
 
-### Key Findings
-- Finding 1: Description and severity
-- Finding 2: Description and severity
-- Finding 3: Description and severity
+**Finding 1: Sends Ether to Arbitrary User (Medium Severity)**
+- Location: `GuessTheNumberChallenge.guess(uint8)` (line 14-20)
+- Issue: The function sends ETH to `msg.sender` without proper access control
+- Code: `msg.sender.transfer(20000000000000)` (line 18)
 
-### Analysis
-Interpretation of Slither results and how they relate to the exploit.
+**Finding 2: Dangerous Strict Equality (Low Severity)**
+- Location: `GuessTheNumberChallenge.isComplete()` (line 10-12)
+- Issue: Uses strict equality `address(this).balance == 0`
+- Risk: Contract balance can be manipulated via selfdestruct from another contract
+
+**Finding 3: Outdated Solidity Version (Informational)**
+- Version: ^0.4.21
+- Known bugs in this version include:
+  - ExpExponentCleanup (Medium/High)
+  - NestedArrayFunctionCallDecoder (Medium)
+  - SignedArrayStorageCopy (Low/Medium)
+  - And 15+ other documented bugs
+- Recommendation: Use Solidity 0.8.0 or later
+
+**Finding 4: State Variable Should Be Constant (Optimization)**
+- Location: `GuessTheNumberChallenge.answer` (line 4)
+- Issue: Variable `answer` never changes and should be declared `constant`
+- Gas savings: Would reduce deployment costs
+
+### Analysis of Findings
+
+**Critical for Exploit:**
+- None of Slither's findings directly relate to the main vulnerability (answer visibility)
+- Slither focuses on code quality and known patterns, not logic flaws
+
+**Relevant Security Issues:**
+1. The "arbitrary user" warning is a false positive - the contract is designed to send ETH to whoever guesses correctly
+2. The strict equality check could theoretically be exploited by force-sending ETH to the contract
+3. Using an outdated compiler exposes the contract to known bugs
+
+**What Slither Missed:**
+- The fundamental vulnerability: storing the answer as a readable state variable
+- All blockchain data is public and `answer` can be read directly from storage
 
 ## 3. Mythril Analysis
 
