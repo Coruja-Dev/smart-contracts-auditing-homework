@@ -123,15 +123,62 @@ slither challenges/1-Guess-the-number/
 myth analyze challenges/1-Guess-the-number/GuessTheNumber.sol
 ```
 
+## 3. Mythril Analysis
+
+### Running Mythril
+```bash
+myth analyze challenges/1-Guess-the-number/GuessTheNumber.sol --solv 0.4.21
+```
+
 ### Mythril Output
-[Paste relevant Mythril findings]
+
+**Finding: Unprotected Ether Withdrawal**
+- **SWC ID**: 105
+- **Severity**: High
+- **Contract**: GuessTheNumberChallenge
+- **Function**: guess(uint8)
+- **Location**: Line 18 - `msg.sender.transfer(0.00002 ether)`
+
+**Description:**
+Any sender can withdraw Ether from the contract account. Arbitrary senders other than the contract creator can profitably extract Ether from the contract account.
+
+**Attack Scenario Detected:**
+```
+Initial State:
+- Creator balance: 0x12309ce54002
+- Attacker balance: 0x400000090000
+
+Transaction Sequence:
+1. Creator deploys contract with 0.00001 ether
+2. Attacker calls guess(42) with 0.00001 ether
+3. Attacker receives 0.00002 ether (profit!)
+```
 
 ### Key Findings
-- Finding 1: Description
-- Finding 2: Description
+
+**1. Unprotected Ether Withdrawal (High Severity)**
+- Mythril correctly identified that anyone can call `guess(42)` and withdraw funds
+- The tool detected the exact attack vector: calling `guess(uint8)` with parameter `42` (0x2a in hex)
+- Mythril showed the transaction data: `0x4ba4c16b000000000000000000000000000000000000000000000000000000000000002a`
 
 ### Analysis
-What additional insights does Mythril provide?
+
+**What Mythril Found:**
+- Mythril successfully detected that the contract allows arbitrary users to withdraw Ether
+- The symbolic execution traced through the function and identified that the answer check can be bypassed by knowing the correct value
+- Mythril provided concrete attack parameters showing exactly how to exploit the vulnerability
+
+**Comparison with Slither:**
+- Slither flagged this as "sends eth to arbitrary user" (lower severity)
+- Mythril elevated this to "High" severity and provided an actual attack trace
+- Mythril's symbolic execution gave more actionable exploit information
+
+**Root Cause:**
+While Mythril correctly identifies the withdrawal vulnerability, the fundamental issue is that:
+1. The answer is stored as a state variable
+2. All blockchain state is publicly readable
+3. Anyone can read `answer = 42` from storage slot 0
+4. Therefore, anyone can call `guess(42)` and drain the contract
 
 ## 4. Foundry Analysis (Optional)
 
